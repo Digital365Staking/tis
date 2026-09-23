@@ -37,7 +37,7 @@ input[type=text],input[type=email]{width:100%;padding:10px;margin:4px 0 8px;bord
 <div class="lang" id="lg"></div><h1 id="h"></h1><p class="mu" id="in"></p>
 <form id="f"></form><p id="msg" class="mu"></p></main>
 <script>
-const ENDPOINT="https://script.google.com/macros/s/AKfycbzSjHmuokL1mI6aBigeZnAsgRDwm46u3Tk82q0urgzadQH5SadhfSpSku4auYBfRDxj_Q/exec"; // Apps Script web-app URL
+const ENDPOINT="https://script.google.com/macros/s/AKfycbzhKUODRcgIppdXFsHpy3aX8OLVfPqKf6Wvcic5KPZ20ktZ-7hv09sktnT5DM4JObORrw/exec"; // Apps Script web-app URL
 const LN=["en","fr","es"]; // label order: EN|FR|ES
 const T={
 h:"Tiger mosquito: sterile insect technique|Moustique tigre : technique de l'insecte stérile|Mosquito tigre: técnica del insecto estéril",
@@ -116,10 +116,11 @@ f.onsubmit=async e=>{e.preventDefault();
  const r={date:new Date().toISOString(),lang:LN[lang]};
  for(const q of Q){const v=q[3]&&A.know!="yes"?"":A[q[0]];r[q[0]]=Array.isArray(v)?v.join(";"):v||""}
  const b=f.querySelector(".go");b.disabled=true;
- try{if(!ENDPOINT)throw 0;
+ try{if(!ENDPOINT)throw "no endpoint";
   const w=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)});
-  if(!(await w.text()).trim().startsWith("ok"))throw 0;
+  const t=await w.text();
+  if(!t.trim().startsWith("ok"))throw "HTTP "+w.status+" "+t.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,120);
   wipe();markSent();A={};done=1;$("#msg").textContent="";draw()}
- catch(x){b.disabled=false;$("#msg").textContent=tx(T.fb)}};
+ catch(x){b.disabled=false;$("#msg").textContent=tx(T.fb)+" ["+(x&&x.message||x)+"]"}};
 load();done=isSent();draw();
 </script></body></html>
