@@ -4,7 +4,7 @@
 <title>Moustique tigre · TIS · Survey</title>
 <!--
 GOOGLE SETUP (Apps Script: script.google.com > New project > Deploy > Web app > access "Anyone"):
-function doPost(e){var s=SpreadsheetApp.openById("SHEET_ID").getSheets()[0],d=JSON.parse(e.postData.contents);
+function doPost(e){var s=SpreadsheetApp.openById("1B3ikKWSbriBinkZzkpsUuBMKtyfcJJrslRtlPMeAbZs").getSheets()[0],d=JSON.parse(e.postData.contents);
 if(!s.getLastRow())s.appendRow(Object.keys(d));s.appendRow(Object.values(d));return ContentService.createTextOutput("ok")}
 Paste the web-app URL in ENDPOINT below. Export the sheet with File > Download > CSV.
 Without ENDPOINT, the browser downloads a CSV file instead.
@@ -38,7 +38,7 @@ input[type=text],input[type=email]{width:100%;padding:10px;margin:4px 0 8px;bord
 <div class="lang" id="lg"></div><h1 id="h"></h1><p class="mu" id="in"></p>
 <form id="f"></form><p id="msg" class="mu"></p></main>
 <script>
-const ENDPOINT=""; // Apps Script web-app URL
+const ENDPOINT="https://script.google.com/macros/s/AKfycbzSjHmuokL1mI6aBigeZnAsgRDwm46u3Tk82q0urgzadQH5SadhfSpSku4auYBfRDxj_Q/exec"; // Apps Script web-app URL
 const LN=["en","fr","es"]; // label order: EN|FR|ES
 const T={
 h:"Tiger mosquito: sterile insect technique|Moustique tigre : technique de l'insecte stérile|Mosquito tigre: técnica del insecto estéril",
