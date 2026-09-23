@@ -7,7 +7,6 @@ GOOGLE SETUP (Apps Script: script.google.com > New project > Deploy > Web app > 
 function doPost(e){var s=SpreadsheetApp.openById("1B3ikKWSbriBinkZzkpsUuBMKtyfcJJrslRtlPMeAbZs").getSheets()[0],d=JSON.parse(e.postData.contents);
 if(!s.getLastRow())s.appendRow(Object.keys(d));s.appendRow(Object.values(d));return ContentService.createTextOutput("ok")}
 Paste the web-app URL in ENDPOINT below. Export the sheet with File > Download > CSV.
-Without ENDPOINT, the browser downloads a CSV file instead.
 -->
 <style>
 :root{--bg:#f2f6f8;--fg:#12283a;--card:#fff;--ac:#1d4e89;--mu:#5b6f80;--ln:#cbd8e1;--hi:#f2b705}
@@ -47,7 +46,7 @@ go:"Send my answers|Envoyer mes réponses|Enviar mis respuestas",
 next:"Next|Suivant|Siguiente",back:"Back|Retour|Atrás",step:"Step {0} of {1}|Étape {0} sur {1}|Paso {0} de {1}",
 no:"No problem: the meetup is a good way to discover it.|Pas de souci : le meetup est l'occasion de la découvrir.|Sin problema: el meetup es una buena ocasión para conocerla.",
 ok:"Thank you! See you in Barcelona.|Merci ! À bientôt à Barcelone.|¡Gracias! Nos vemos en Barcelona.",
-fb:"Your answers could not be sent: a CSV file was downloaded instead.|Vos réponses n'ont pas pu être envoyées : un fichier CSV a été téléchargé à la place.|No se pudieron enviar las respuestas: se ha descargado un archivo CSV."};
+fb:"Your answers could not be sent. Please try again in a moment.|Vos réponses n'ont pas pu être envoyées. Merci de réessayer dans un instant.|No se pudieron enviar las respuestas. Inténtelo de nuevo en unos instantes."};
 const S=["Your organisation|Votre structure|Su organización","Tiger mosquito on your sites|Le moustique tigre sur vos sites|El mosquito tigre en sus instalaciones","Sterile insect technique (SIT)|Technique de l'insecte stérile (TIS)|Técnica del insecto estéril (TIE)","Barcelona meetup|Meetup à Barcelone|Meetup en Barcelona","Contact"];
 const YN="yes:Yes|Oui|Sí,mb:Maybe|Peut-être|Quizá,no:No|Non|No";
 // [id, type s=single m=multi t=text, section, only-if-knows-SIT, question, options]
@@ -109,10 +108,6 @@ f.oninput=e=>{const t=e.target,n=t.name;if(!n)return;
  save();vis()};
 $("#lg").onclick=e=>{if(e.target.dataset.i){ml=lang=+e.target.dataset.i;save();draw()}};
 f.onclick=e=>{if(e.target.classList.contains("back")){step--;save();draw();scrollTo(0,0)}};
-const csv=r=>{const q=a=>a.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",");
- const a=document.createElement("a");
- a.href=URL.createObjectURL(new Blob(["\ufeff"+q(Object.keys(r))+"\n"+q(Object.values(r))],{type:"text/csv"}));
- a.download="enquete-tis.csv";a.click()};
 f.onsubmit=async e=>{e.preventDefault();
  if(step<S.length-1){step++;save();draw();scrollTo(0,0);return}
  const r={date:new Date().toISOString(),lang:LN[lang]};
@@ -121,6 +116,6 @@ f.onsubmit=async e=>{e.preventDefault();
   const w=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)});
   if(!(await w.text()).trim().startsWith("ok"))throw 0;
   wipe();A={};done=1;draw()}
- catch(x){csv(r);$("#msg").textContent=tx(T.fb)}};
+ catch(x){$("#msg").textContent=tx(T.fb)}};
 load();draw();
 </script></body></html>
