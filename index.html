@@ -47,7 +47,7 @@ go:"Send my answers|Envoyer mes réponses|Enviar mis respuestas",
 next:"Next|Suivant|Siguiente",back:"Back|Retour|Atrás",step:"Step {0} of {1}|Étape {0} sur {1}|Paso {0} de {1}",
 no:"No problem: the meetup is a good way to discover it.|Pas de souci : le meetup est l'occasion de la découvrir.|Sin problema: el meetup es una buena ocasión para conocerla.",
 ok:"Thank you! See you in Barcelona.|Merci ! À bientôt à Barcelone.|¡Gracias! Nos vemos en Barcelona.",
-fb:"No server configured yet: a CSV file was downloaded instead.|Aucun serveur configuré : un fichier CSV a été téléchargé à la place.|Servidor no configurado: se ha descargado un archivo CSV."};
+fb:"Your answers could not be sent: a CSV file was downloaded instead.|Vos réponses n'ont pas pu être envoyées : un fichier CSV a été téléchargé à la place.|No se pudieron enviar las respuestas: se ha descargado un archivo CSV."};
 const S=["Your organisation|Votre structure|Su organización","Tiger mosquito on your sites|Le moustique tigre sur vos sites|El mosquito tigre en sus instalaciones","Sterile insect technique (SIT)|Technique de l'insecte stérile (TIS)|Técnica del insecto estéril (TIE)","Barcelona meetup|Meetup à Barcelone|Meetup en Barcelona","Contact"];
 const YN="yes:Yes|Oui|Sí,mb:Maybe|Peut-être|Quizá,no:No|Non|No";
 // [id, type s=single m=multi t=text, section, only-if-knows-SIT, question, options]
@@ -98,7 +98,7 @@ function draw(){
   if(s!=step)continue;
   h+=`<fieldset data-id="${id}"${tis?' class="tis"':""}><legend>${tx(q)}</legend>`;
   if(ty=="t")h+=`<input type="${id=="em"?"email":"text"}" name="${id}" value="${(A[id]||"").replace(/"/g,"&quot;")}">`;
-  else for(const x of o.split(",")){const[k,...r]=x.split(":"),v=r.join(":")||k,
+  else for(const x of o.split(/,(?=[\w+-]+:)/)){const[k,...r]=x.split(":"),v=r.join(":")||k,
    on=ty=="m"?(A[id]||[]).includes(k):A[id]==k;
    h+=`<label class="o"><input type="${ty=="m"?"checkbox":"radio"}" name="${id}" value="${k}"${on?" checked":""}${ty=="s"&&["type","know"].includes(id)?" required":""}> ${tx(v)}</label>`}
   h+="</fieldset>"+(id=="know"?'<p id="no" class="mu"></p>':"")}
@@ -118,7 +118,8 @@ f.onsubmit=async e=>{e.preventDefault();
  const r={date:new Date().toISOString(),lang:LN[lang]};
  for(const q of Q){const v=q[3]&&A.know!="yes"?"":A[q[0]];r[q[0]]=Array.isArray(v)?v.join(";"):v||""}
  try{if(!ENDPOINT)throw 0;
-  await fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)});
+  const w=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)});
+  if(!(await w.text()).trim().startsWith("ok"))throw 0;
   wipe();A={};done=1;draw()}
  catch(x){csv(r);$("#msg").textContent=tx(T.fb)}};
 load();draw();
