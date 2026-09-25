@@ -111,10 +111,25 @@ f.oninput=e=>{const t=e.target,n=t.name;if(!n)return;
  save();vis()};
 $("#lg").onclick=e=>{if(e.target.dataset.i){ml=lang=+e.target.dataset.i;save();draw()}};
 f.onclick=e=>{if(e.target.classList.contains("back")){step--;save();draw();scrollTo(0,0)}};
+// Headers: EN / FR / ES together, so the sheet reads regardless of the respondent's language.
+const HDR={date:"Date|Date|Fecha",lang:"Language|Langue|Idioma",type:"Business type|Type d'activité|Tipo de actividad",
+ size:"Number of sites|Nombre de sites|Número de sitios",season:"Main season|Saison principale|Temporada principal",
+ pres:"Tiger mosquito present|Présence moustique tigre|Presencia mosquito tigre",
+ impact:"Observed impacts|Impacts constatés|Impactos observados",meas:"Current measures|Mesures actuelles|Medidas actuales",
+ bud:"Current control budget|Budget lutte actuelle|Presupuesto control actual",know:"Knows SIT|Connaît la TIS|Conoce la TIE",
+ arg:"Convincing arguments|Arguments convaincants|Argumentos convincentes",con:"Concerns|Inquiétudes|Preocupaciones",
+ host:"Would host releases|Accueillerait des lâchers|Aceptaría sueltas",
+ coll:"Would join collective scheme|Rejoindrait un dispositif collectif|Se uniría a un dispositivo colectivo",
+ mod:"Preferred model|Modèle préféré|Modelo preferido",tb:"Possible SIT budget|Budget possible TIS|Presupuesto posible TIE",
+ mi:"Interested in meetup|Intéressé meetup|Interesado en meetup",mf:"Preferred format|Format préféré|Formato preferido",
+ mt:"Topics wanted|Sujets souhaités|Temas deseados",sp:"Willing to speak|Souhaite témoigner|Dispuesto a hablar",
+ nm:"Name|Nom|Nombre",em:"Email|Email|Correo electrónico",org:"Organisation|Organisation|Organización",
+ ok:"GDPR consent|Consentement RGPD|Consentimiento RGPD"};
+const hd=k=>HDR[k].split("|").join(" / ");
 f.onsubmit=async e=>{e.preventDefault();
  if(step<S.length-1){step++;save();draw();scrollTo(0,0);return}
- const r={date:new Date().toISOString(),lang:LN[lang]};
- for(const q of Q){const v=q[3]&&A.know!="yes"?"":A[q[0]];r[q[0]]=Array.isArray(v)?v.join(";"):v||""}
+ const r={};r[hd("date")]=new Date().toISOString();r[hd("lang")]=LN[lang];
+ for(const q of Q){const v=q[3]&&A.know!="yes"?"":A[q[0]];r[hd(q[0])]=Array.isArray(v)?v.join(";"):v||""}
  const b=f.querySelector(".go");b.disabled=true;
  try{if(!ENDPOINT)throw "no endpoint";
   const w=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)});
